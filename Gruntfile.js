@@ -2,24 +2,8 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
 	  
-	bgShell: {
-      _defaults: {
-        bg: true
-      },
-      runNg: {
-		cmd: 'npm start',
-        bg: true 
-	  }
-    },
-	
-	run: {
-		tool: {
-		  cmd: 'npm start',
-		}
-	},
-	
 	server: {
-       port: 8001,
+       port: 8000,
        base: './'
     },
 	
@@ -35,27 +19,27 @@ module.exports = function(grunt) {
     concat: {
       devjs: {
           // the files to concatenate
-          src: ['src/app/*.js'],
+          src: ['src/**/*.js'],
           // the location of the resulting JS file
-          dest: 'dist/dev/launch.component.js'
+          dest: 'dist/dev/brewery.component.js'
       },
       devcss: {
         // the files to concatenate
         src: ['src/**/*.css'],
         // the location of the resulting JS file
-        dest: 'dist/dev/launch.component.css'
+        dest: 'dist/dev/brewery.component.css'
       }
     },
     uglify: {
       prodjs: {
-        src : ['src/app/*.js'],
-        dest : 'dist/prod/launch.component.min.js'
+        src : ['src/**/*.js'],
+        dest : 'dist/prod/brewery.component.min.js'
       }
     },
     cssmin: {
       prod: {
           files: {
-            'dist/prod/launch.component.min.css': ['src/**/*.css']
+            'dist/prod/brewery.component.min.css': ['src/**/*.css']
           }
       }
     },
@@ -156,9 +140,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-sass');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks("grunt-ts");
-  grunt.loadNpmTasks('grunt-run');
-  grunt.loadNpmTasks('grunt-bg-shell');
 
   //default task
   grunt.registerTask('default', [
@@ -170,30 +151,22 @@ module.exports = function(grunt) {
       'concat:devcss',
       'copy:devviews',
       'copy:devtemplates',
-	  /*'bgShell',*/
 	  'server'
   ]);
-  grunt.registerTask('start', [
+  grunt.registerTask('prod', [
       'clean:tmp',
       'clean:prod',
       'jshint',
-      /*'uglify:prodjs',*/
+      'uglify:prodjs',
       'sass:dev',
       'cssmin:prod',
       'copy:prodviews',
       'copy:prodtemplates',
-	  'concat:devjs',
-	  'concat:devcss',
-	  /*'bgShell',*/
 	  'server'
   ]);
   
-  
-  
-  
-  
 grunt.registerTask('server', 'Start a custom web server', function() {
-    grunt.log.writeln('Started web server on port 8000..');
+    grunt.log.writeln('Started web server on port 8000');
 	var done = this.async();
     require('./src/server.js').start(8000);
 });
@@ -202,4 +175,3 @@ grunt.registerTask('server', 'Start a custom web server', function() {
     grunt.task.run('watch:devcss');
   });
 };
-

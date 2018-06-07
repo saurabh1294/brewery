@@ -22,97 +22,30 @@ beerContainerApp.service('beerContainerService', ['$http', '$q', function($http,
 	}
 }]);
 
-beerContainerApp.filter('minLength', function() {
-	return function(input, len, pad) {
-		input = input.toString();
-		if (input.length >= len) return input;
-		else {
-			pad = (pad || 0).toString();
-			return new Array(1 + len - input.length).join(pad) + input;
-		}
-	};
-});
 
-beerContainerApp.filter('searchFor', function() {
-
-	// All filters must return a function. The first parameter
-	// is the data that is to be filtered, and the second is an
-	// argument that may be passed with a colon (searchFor:searchString)
-
-
-});
 
 angular.module('beerContainerDemo').controller('ContainerCtrl', ['$scope', '$q', '$http', '$filter', '$interval', 'beerContainerService', 
 function($scope, $q, $http, $filter, $interval, beerContainerService) {
+	
+	$scope.containerTemps = ['4°C - 6°C', '5°C - 6°C', '4°C - 7°C', '6°C - 8°C', '3°C - 5°C'];
 
 	// make web service call here and fetch all data including page numbers
 	$interval(function() {
 		beerContainerService.getContainerTemperatures().then(function(response) {
 			//console.log("HERE", response);
-
-			plotGraph(response);
+			$scope.containers = response;
 		});
 	}, 1000);
 
-
-
-	function plotGraph(response) {
-
-		var data = response;
-		var svg = d3.select("svg"),
-			margin = {
-				top: 20,
-				right: 20,
-				bottom: 30,
-				left: 40
-			},
-			width = +svg.attr("width") - margin.left - margin.right,
-			height = +svg.attr("height") - margin.top - margin.bottom;
-
-		var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
-			y = d3.scaleLinear().rangeRound([height, 0]);
-
-		svg.selectAll("*").remove();
-		var g = svg.append("g")
-			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-
-		x.domain(data.map(function(d) {
-			return d.containerNumber;
-		}));
-		y.domain([0, d3.max(data, function(d) {
-			return 15; //d.temperature;
-		})]);
-
-		g.append("g")
-			.attr("class", "axis axis--x")
-			.attr("transform", "translate(0," + height + ")")
-			.call(d3.axisBottom(x));
-
-		g.append("g")
-			.attr("class", "axis axis--y")
-			.call(d3.axisLeft(y).tickFormat(d3.format("%s,C")))
-			.append("text")
-			.attr("transform", "rotate(-90)")
-			.attr("y", 6)
-			.attr("dy", "0.71em")
-			.attr("text-anchor", "end")
-			.text("temperature");
-
-		g.selectAll(".bar")
-			.data(data)
-			.enter().append("rect")
-			.attr("class", "bar")
-			.attr("x", function(d) {
-				return x(d.containerNumber);
-			})
-			.attr("y", function(d) {
-				return y(d.temperature);
-			})
-			.attr("width", x.bandwidth())
-			.attr("height", function(d) {
-				return height - y(d.temperature);
-			});
-
+	$scope.checkTemperature = function(temperature, index) {
+		var temps = this.containerTemps[index].match(/\d+/g);
+		console.log(temps , "TEMPS", temperature);
+		if (temperature < parseInt(temps[0]) || temperature > parseInt(temps[1])) {
+			return true;	// temperature warning condition
+			// we can set notifications here to send SMS or email notifications
+		}
+		
+		return false;
 	}
+
 }])

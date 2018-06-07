@@ -1,42 +1,50 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<html ng-app="beerContainerDemo">
+<html lang="en" ng-app="beerContainerDemo">
 <head>
-	<style>
-
-	.bar {
-  fill: steelblue;
-}
-
-.bar:hover {
-  fill: brown;
-}
-
-.axis--x path {
-  display: none;
-}
-	</style>
-	
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+  <title>Beer container temperature monitor demo</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+  
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script> 
 </head>
-<div class = "container" ng-controller="ContainerCtrl">
-<svg width="300" height="500"></svg>
-</div>
 <body>
-	
-<script src="https://d3js.org/d3.v4.min.js"></script>
 
+<div class="container" ng-controller="ContainerCtrl">
+  <h2>Beer container temperature demo</h2>
+  <p>This is a demo for notifying about temperature changes in Beer containers</p>
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th>Container Number</th>
+        <th>Acceptable Temperature Range</th>
+        <th>Current Temperature</th>
+		<th> Temperature Warning</th>
+      </tr>
+    </thead>
+    <tbody>
+	  <tr ng-repeat="item in containers">
+		<td>Beer{{$index+1}}</td>
+		<td>{{containerTemps[$index]}}
+		<td ng-class="{'tdBg' : checkTemperature(item.temperature, $index) == true}">{{item.temperature}}</td>
+		<td>{{checkTemperature(item.temperature, $index) === false ? 'Acceptable Range':'Unacceptable Range'}}</td>
+	  </tr>
+      
+      
+    </tbody>
+  </table>
+ 
+</div>
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<!-- Latest compiled JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 		
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.js"></script>
 <script src="js/beer.js"></script>
+
 </body>
-
 </html>
-
