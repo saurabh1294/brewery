@@ -20,7 +20,10 @@ app.listen(port, host); */
 app.use(express.static(__dirname));
 
 app.get('/', function(req, res) {	
-	res.sendFile('./index.html');
+	var pathArray = __dirname.split("\\");
+	pathArray.splice(pathArray.length-1, 1);
+	var path = pathArray.join("\\");
+	res.sendFile(path+'/index.html');
 })
 
 app.all('*', function(req, res, next) {
